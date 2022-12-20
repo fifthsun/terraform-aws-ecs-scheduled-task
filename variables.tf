@@ -31,6 +31,7 @@ variable "ecs_subnets" {
 }
 
 # CPU/MEM values are here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
+#
 
 variable "ecs_task_cpu" {
   type    = number
@@ -40,6 +41,11 @@ variable "ecs_task_cpu" {
 variable "ecs_task_mem" {
   type    = number
   default = 4096
+}
+
+variable "ecs_task_command" {
+  type = list(string)
+  default = []
 }
 
 variable "ecs_cluster_arn" {

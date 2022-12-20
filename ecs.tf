@@ -5,27 +5,24 @@
 
 resource "aws_ecs_task_definition" "task_def" {
 
-  family        = var.name
-  network_mode  = "awsvpc"
-  task_role_arn = aws_iam_role.task_role.arn
-
+  family                   = var.name
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.ecs_task_cpu
   memory                   = var.ecs_task_mem
+  task_role_arn            = aws_iam_role.task_role.arn
   execution_role_arn       = aws_iam_role.task_execution_role.arn
 
   container_definitions = jsonencode(
     [
       {
         "name" : var.name,
-        "image" : "${var.ecr_repository_url}@${var.image_tag}",
+        "image" : "${var.ecr_repository_url}:${var.image_tag}",
+        "command" : var.ecs_task_command,
         "cpu" : var.ecs_task_cpu,
         "memory" : var.ecs_task_mem,
         "essential" : true,
-        "portMappings" : [],
         "environment" : var.task_def_env_vars,
-        "mountPoints" : [],
-        "volumesFrom" : [],
         "logConfiguration" : {
           "logDriver" : "awslogs",
           "options" : {
@@ -37,6 +34,10 @@ resource "aws_ecs_task_definition" "task_def" {
       }
     ]
   )
-
-  tags = var.tags
+  /*
+   lifecycle {
+    ignore_changes = [
+      container_definitions
+    ]
+    */
 }
